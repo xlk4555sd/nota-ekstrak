@@ -1,0 +1,135 @@
+{
+  "summary": {
+    "judged": 5,
+    "hits": {
+      "vendor": 5,
+      "tanggal": 5,
+      "nomor_nota": 1,
+      "total": 5,
+      "mata_uang": 5
+    },
+    "errors": []
+  },
+  "details": [
+    {
+      "file": "X00016469612.jpg",
+      "seconds": 3.14,
+      "prompt_tokens": 587,
+      "expected": {
+        "vendor": "BOOK TA .K (TAMAN DAYA) SDN BHD",
+        "tanggal": "25/12/2018",
+        "total": "9.00",
+        "mata_uang": "MYR",
+        "nomor_nota": ""
+      },
+      "got": {
+        "vendor": "BOOK TA .K (TAMAN DAYA) SDN BHD",
+        "tanggal": "25/12/2018",
+        "nomor_nota": "TD01167104",
+        "total": "9.00",
+        "mata_uang": "MYR"
+      },
+      "vendor_ok": true,
+      "tanggal_ok": true,
+      "nomor_nota_ok": false,
+      "total_ok": true,
+      "mata_uang_ok": true
+    },
+    {
+      "file": "X00016469619.jpg",
+      "seconds": 3.12,
+      "prompt_tokens": 550,
+      "expected": {
+        "vendor": "INDAH GIFT & HOME DECO",
+        "tanggal": "19/10/2018",
+        "total": "60.30",
+        "mata_uang": "MYR",
+        "nomor_nota": ""
+      },
+      "got": {
+        "vendor": "INDAH GIFT & HOME DECO",
+        "tanggal": "19/10/2018",
+        "nomor_nota": "050100035279",
+        "total": "60.30",
+        "mata_uang": "MYR"
+      },
+      "vendor_ok": true,
+      "tanggal_ok": true,
+      "nomor_nota_ok": false,
+      "total_ok": true,
+      "mata_uang_ok": true
+    },
+    {
+      "file": "X00016469620.jpg",
+      "seconds": 9.79,
+      "prompt_tokens": 538,
+      "expected": {
+        "vendor": "MR D.I.Y. (JOHOR) SDN BHD",
+        "tanggal": "12-01-19",
+        "total": "33.90",
+        "mata_uang": "MYR",
+        "nomor_nota": ""
+      },
+      "got": {
+        "vendor": "MR D.I.Y. (JOHOR) SDN BHD",
+        "tanggal": "12-01-19",
+        "nomor_nota": "",
+        "total": "33.90",
+        "mata_uang": "MYR"
+      },
+      "vendor_ok": true,
+      "tanggal_ok": true,
+      "nomor_nota_ok": true,
+      "total_ok": true,
+      "mata_uang_ok": true
+    },
+    {
+      "file": "X00016469622.jpg",
+      "seconds": 4.53,
+      "prompt_tokens": 538,
+      "expected": {
+        "vendor": "YONGFATT ENTERPRISE",
+        "tanggal": "25/12/2018",
+        "total": "80.90",
+        "mata_uang": "MYR",
+        "nomor_nota": ""
+      },
+      "got": {
+        "vendor": "YONGFATT ENTERPRISE",
+        "tanggal": "25/12/2018",
+        "nomor_nota": "CS00031663",
+        "total": "80.90",
+        "mata_uang": "MYR"
+      },
+      "vendor_ok": true,
+      "tanggal_ok": true,
+      "nomor_nota_ok": false,
+      "total_ok": true,
+      "mata_uang_ok": true
+    },
+    {
+      "file": "X00016469623.jpg",
+      "seconds": 2.64,
+      "prompt_tokens": 587,
+      "expected": {
+        "vendor": "MR D.I.Y. (M) SDN BHD",
+        "tanggal": "18-11-18",
+        "total": "30.90",
+        "mata_uang": "MYR",
+        "nomor_nota": ""
+      },
+      "got": {
+        "vendor": "MR D.I.Y. (M) SDN BHD",
+        "tanggal": "18-11-18",
+        "nomor_nota": "T2 R00002902",
+        "total": "30.90",
+        "mata_uang": "MYR"
+      },
+      "vendor_ok": true,
+      "tanggal_ok": true,
+      "nomor_nota_ok": false,
+      "total_ok": true,
+      "mata_uang_ok": true
+    }
+  ]
+}
