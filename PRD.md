@@ -56,7 +56,7 @@ Aturan:
 ## 7. Kejujuran hasil (keputusan dari uji nyata)
 
 - Setiap kolom punya **tingkat keyakinan**; kolom ragu ditandai `⚠` di tabel tinjau.
-- **`nomor_nota` selalu masuk daftar periksa** — pada uji 5 nota, kolom inilah yang salah baca (1 dari 5).
+- **`nomor_nota` selalu masuk daftar periksa** — pada uji 5 nota, kelima nota di dataset tidak mencetak nomor sama sekali, dan model tetap mengisi 4 di antaranya. Itu karangan, bukan bacaan. Hanya 1 dari 5 yang benar karena mengosongkan.
 - Kalau model gagal/keluar dari format: **coba ulang 1×** dengan instruksi lebih ketat, lalu tandai `GAGAL`. Tidak mengarang isi.
 - Nota yang gagal **tidak menggagalkan** nota lain dalam pekerjaan yang sama.
 
@@ -82,7 +82,15 @@ Diukur pada data uji berlabel (**`eval/score.py`**, sumber SROIE):
 
 Angka final ditulis apa adanya di README, termasuk yang gagal.
 
-**Baseline terukur (5 nota, 24 Okt 2026):** vendor 5/5 · tanggal 5/5 · total 5/5 · nomor 4/5.
+**Baseline terukur (5 nota):** vendor 5/5 · tanggal 5/5 · total 5/5 · mata_uang 5/5 · nomor 1/5.
+
+> **Koreksi 25 Okt 2026.** Versi pertama PRD menulis `nomor 4/5`. Angka itu salah hitung: skrip
+> lama menganggap "model mengisi sesuatu" sebagai benar, tanpa membandingkan dengan kunci jawaban
+> yang ternyata kosong. Kelima nota SROIE di dataset tidak mencetak nomor. Setelah perbandingan
+> diperbaiki, hasilnya 1/5 — satu-satunya benar adalah yang mengosongkan.
+>
+> Angka target di atas (`nomor_nota ≥ 70%`) **tidak tercapai** dan tidak akan dicapai dengan model
+> ini pada data ini. Target dibiarkan sebagai catatan niat, bukan diklaim sudah lewat.
 
 ## 11. Risiko yang sudah diketahui
 

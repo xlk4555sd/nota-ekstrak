@@ -36,14 +36,16 @@ bukan perkiraan:
 | mata_uang | 5/5 |
 | nomor_nota | 1/5 |
 
-`nomor_nota` adalah kolom terlemah dan itu diketahui. Nota Malaysia di dataset
-itu sering tidak mencetak nomor sama sekali, sehingga model mengarang dari
-digit lain di kertas. Karena itu setiap nomor nota yang dihasilkan selalu
-ditandai untuk diperiksa manusia — sistem tidak pernah mengaku yakin pada kolom
-ini. Waktu proses 2,6–9,8 detik per nota, rata-rata 4,6 detik.
+`nomor_nota` adalah kolom terlemah dan itu diketahui. Kelima nota di dataset itu
+sama sekali tidak mencetak nomor, dan model tetap mengisi 4 di antaranya —
+angka yang dikarang dari digit lain di kertas, bukan dibaca. Hanya satu yang
+benar, yaitu yang mengosongkan. Karena itu setiap nomor nota yang dihasilkan
+selalu ditandai untuk diperiksa manusia: sistem tidak pernah mengaku yakin pada
+kolom ini. Waktu proses 2,6–9,8 detik per nota, rata-rata 4,6 detik.
 
-Angka `nomor_nota` yang rendah berasal dari kertas SROIE yang memang sering
-tidak mencetak nomor sama sekali, bukan dari model yang buruk pada nota asli.
+Angka 1/5 ini bukan tanda model buruk pada nota asli — lima kertas uji itu
+memang tidak punya nomor untuk dibaca. Tapi justru itulah alasan fitur
+"perlu dicek" ada: kalau nomor tidak tercetak, model akan mengarang.
 
 ## Menjalankan
 
