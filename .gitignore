@@ -1,0 +1,13 @@
+data/
+__pycache__/
+*.pyc
+.venv/
+.env
+*.sqlite3
+*.log
+
+# Gambar dan PDF SROIE tidak ikut: ukurannya membengkak dan siapa pun bisa
+# mengunduhnya sendiri. Yang WAJIB ikut justru angka hasilnya, karena README
+# mengutip tabel akurasi dari sini — tanpa berkas ini klaimnya tak bisa dicek.
+eval/dataset/images/
+eval/dataset/pdf_contoh/

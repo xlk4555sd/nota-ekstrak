@@ -1,0 +1,8 @@
+# Ketergantungan sengaja sedikit. Tidak ada pustaka bot Telegram: urllib
+# dari pustaka standar cukup untuk empat permintaan yang dipakai.
+# Versi dikunci pada angka yang benar-benar diuji, bukan "terbaru".
+
+Flask==3.1.3
+openpyxl==3.1.5
+PyMuPDF==2.0
+pillow==13.0.0
