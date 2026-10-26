@@ -218,23 +218,6 @@ di tes; akurasi sesungguhnya hanya diukur lewat `eval/run_live.sh`.
 
 ## Lisensi
 
-Kode proyek ini MIT — lihat `LICENSE`. Bebas dipakai, diubah, dan dijual,
-dengan syarat notice hak cipta ikut disertakan.
-
-Dependensi hampir semuanya permisif dan tidak menimbulkan kewajiban tambahan:
-Flask, Werkzeug, Jinja2, MarkupSafe, itsdangerous, click (BSD-3-Clause),
-blinker, openpyxl, et-xmlfile (MIT), Pillow (MIT-CMU).
-
-**Satu pengecualian yang perlu dibaca sebelum dipakai komersial:** PyMuPDF
-berlisensi ganda — **AGPL-3.0** atau lisensi komersial Artifex. AGPL lebih
-ketat daripada MIT: kalau layanan ini diakses lewat jaringan, kode sumbernya
-harus tersedia bagi pengguna layanan, termasuk perubahan yang dibuat.
-
-Karena itu, memakai proyek ini apa adanya untuk penggunaan pribadi atau
-internal tidak masalah. Untuk menjalankannya sebagai layanan publik atau
-komersial, pilih salah satu: bayar lisensi komersial Artifex, atau ganti
-PyMuPDF dengan pustaka berlisensi permisif seperti `pypdf` (khusus ambil teks)
-atau `pypdfium2` (render halaman ke gambar, BSD/Apache).
-
-MIT pada `LICENSE` hanya mengikat kode di repo ini, bukan dependensinya.
+MIT — lihat `LICENSE`. Bebas dipakai, diubah, dan dijual, dengan syarat
+notice hak cipta ikut disertakan.
 
