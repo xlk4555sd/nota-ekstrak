@@ -31,18 +31,139 @@ def start_text():
         "Banyak nota sekaligus? Unggah ke satu folder Google Drive, atur akses "
         "menjadi <i>siapa saja yang punya link</i>, lalu kirim link foldernya "
         "ke sini.\n\n"
-        "Hasilnya bisa diunduh sebagai CSV atau Excel."
+        "Hasilnya bisa diunduh sebagai CSV atau Excel.\n\n"
+        "Ketik /help kalau ingin penjelasan lengkap."
     )
 
 
 def help_text():
+    """Penjelasan cara pakai, bukan sekadar daftar perintah.
+
+    Yang dijawab berurutan sesuai pertanyaan yang paling sering muncul:
+    bagaimana mengirim, apa yang terjadi setelah dikirim, apa yang harus
+    diperiksa, dan bagaimana menghapus. Istilah teknis dihindari.
+    """
     return (
+        "<b>Cara pakai</b>\n\n"
+        "<b>1. Mengirim nota</b>\n"
+        f"Kirim foto atau berkas {SUPPORTED} langsung ke chat ini.\n"
+        "Boleh beberapa sekaligus — semuanya masuk ke satu tabel.\n\n"
+        "<b>2. Banyak nota dari Drive</b>\n"
+        "Unggah ke satu folder Google Drive, atur akses menjadi "
+        "<i>siapa saja yang punya link</i>, lalu tempel link foldernya ke sini. "
+        "Link ke satu berkas tidak bisa dipakai.\n\n"
+        "<b>3. Yang terjadi setelah dikirim</b>\n"
+        "Nota masuk antrean dan diproses satu per satu. Satu pesan akan "
+        "berubah sendiri dari <i>menunggu</i> menjadi <i>memproses</i> lalu "
+        "<i>selesai</i>. Boleh ditinggal, hasilnya tetap dikirim.\n\n"
+        "<b>4. Mengambil hasil</b>\n"
+        "Setelah selesai, ambil lewat tombol <b>Unduh CSV</b> atau "
+        "<b>Unduh Excel</b>.\n\n"
+        "<b>5. Yang perlu diperiksa</b>\n"
+        "Kolom yang diisi: " + ", ".join(FIELD_LABEL[f] for f in FIELDS) + ".\n"
+        "Kalau ada nota yang ditandai, artinya kolom itu belum terbaca yakin. "
+        "Periksa dulu sebelum dipakai.\n\n"
+        "<b>6. Batas yang perlu diketahui</b>\n"
+        f"• Satu berkas maksimal {config.MAX_UPLOAD_BYTES // (1024 * 1024)} MB\n"
+        f"• Satu PDF maksimal {config.MAX_PDF_PAGES} halaman\n"
+        f"• Satu kiriman maksimal {config.MAX_FILES_PER_JOB} berkas\n"
+        "• Hanya satu kiriman berjalan per chat, supaya hasil tidak tertukar\n\n"
         "<b>Perintah</b>\n"
-        "/start — cara pakai\n"
-        "/status — kiriman yang berjalan dan sisa jatah\n"
-        "/batal — hentikan kiriman yang sedang berjalan\n\n"
-        "Kolom yang diisi: " + ", ".join(FIELD_LABEL[f] for f in FIELDS) + "."
+        "/help — penjelasan ini\n"
+        "/status — kiriman yang berjalan dan sisa jatah hari ini\n"
+        "/batal — hentikan kiriman yang sedang berjalan\n"
+        "/delete — hapus kiriman yang sudah selesai"
     )
+
+
+def delete_help_text(jobs):
+    """Daftar kiriman yang bisa dihapus, beserta cara menghapusnya."""
+    bisa = [j for j in jobs if j["status"] in ("done", "failed", "cancelled")]
+    if not bisa:
+        return (
+            "<b>Belum ada yang bisa dihapus</b>\n\n"
+            "Hanya kiriman yang sudah selesai, gagal, atau dihentikan yang bisa "
+            "dihapus. Kiriman yang masih berjalan hentikan dulu dengan /batal."
+        )
+
+    lines = ["<b>Hapus kiriman</b>", ""]
+    for job in bisa[:15]:
+        lines.append(
+            f"#{job['id']} — {_status_indonesia(job['status'])}, "
+            f"{job['total_files']} berkas"
+        )
+    if len(bisa) > 15:
+        lines.append(f"dan {len(bisa) - 15} kiriman lain lebih lama")
+
+    lines += [
+        "",
+        "Ketik <code>/delete NOMOR</code> untuk menghapus satu kiriman.",
+        "Ketik <code>/delete semua</code> untuk menghapus semuanya.",
+        "Yang dihapus: berkas asli, hasil tabel, dan berkas CSV/Excel-nya.",
+    ]
+    return "\n".join(lines)
+
+
+def delete_confirm_all_text(jumlah):
+    return (
+        f"<b>Hapus semua kiriman?</b>\n\n"
+        f"{jumlah} kiriman yang sudah selesai akan dihapus beserta berkas dan "
+        f"hasilnya. Ini tidak bisa dibatalkan.\n\n"
+        f"Ketik <code>/delete ya</code> kalau yakin."
+    )
+
+
+def delete_done_text(job_id, info):
+    """Kabar setelah satu kiriman terhapus."""
+    return (
+        f"<b>Terhapus</b> #{job_id}\n"
+        f"{info['berkas']} berkas dan {info['hasil']} baris hasil dihapus "
+        f"({_ukuran(info['byte'])})."
+    )
+
+
+def delete_done_all_text(hasil):
+    teks = (
+        f"<b>{len(hasil['dihapus'])} kiriman terhapus</b>\n"
+        f"{hasil['hasil']} baris hasil dibuang ({_ukuran(hasil['byte'])})."
+    )
+    if hasil["dilewati"]:
+        nomor = ", ".join(f"#{i}" for i in hasil["dilewati"])
+        teks += f"\nMasih berjalan, tidak dihapus: {nomor}."
+    return teks
+
+
+def delete_refused_text(reason):
+    return plain(reason)
+
+
+def delete_not_found_text(job_id):
+    return f"Kiriman #{job_id} tidak ada, atau bukan milikmu."
+
+
+def delete_usage_text():
+    return (
+        "Formatnya belum saya mengerti.\n"
+        "Ketik /delete untuk melihat daftar, atau /delete NOMOR."
+    )
+
+
+def _status_indonesia(status):
+    return {
+        "done": "selesai",
+        "failed": "gagal",
+        "cancelled": "dihentikan",
+        "pending": "menunggu",
+        "running": "berjalan",
+    }.get(status, status)
+
+
+def _ukuran(byte):
+    if byte < 1024:
+        return f"{byte} byte"
+    if byte < 1024 * 1024:
+        return f"{byte / 1024:.0f} KB"
+    return f"{byte / (1024 * 1024):.1f} MB"
 
 
 def not_allowed_text(chat_id):

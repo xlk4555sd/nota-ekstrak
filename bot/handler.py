@@ -82,7 +82,9 @@ def _handle_text(chat_id, text):
 
 
 def _handle_command(chat_id, text):
-    command = text.split()[0].split("@")[0].lower()
+    bagian = text.split()
+    command = bagian[0].split("@")[0].lower()
+    argumen = bagian[1:]
 
     if command == "/start":
         telegram.send_message(chat_id, reply.start_text())
@@ -101,8 +103,61 @@ def _handle_command(chat_id, text):
         else:
             telegram.send_message(chat_id, reply.no_active_text())
 
+    elif command == "/delete":
+        _handle_delete(chat_id, argumen)
+
     else:
         telegram.send_message(chat_id, reply.start_text())
+
+
+def _handle_delete(chat_id, argumen):
+    """Hapus manual: tanpa argumen = daftar, dengan nomor = hapus satu.
+
+    Penghapusan menyeluruh sengaja butuh dua langkah (`/delete semua` lalu
+    `/delete ya`). Satu salah ketik tidak boleh menghabiskan riwayat user.
+    """
+    if not argumen:
+        telegram.send_message(chat_id, reply.delete_help_text(db.list_jobs_for_chat(chat_id)))
+        return
+
+    perintah = argumen[0].lower()
+
+    if perintah in ("semua", "all"):
+        selesai = [j for j in db.list_jobs_for_chat(chat_id)
+                   if j["status"] in ("done", "failed", "cancelled")]
+        if not selesai:
+            telegram.send_message(chat_id, reply.delete_help_text(db.list_jobs_for_chat(chat_id)))
+            return
+        telegram.send_message(chat_id, reply.delete_confirm_all_text(len(selesai)))
+        return
+
+    if perintah in ("semua!", "ya", "yes"):
+        hasil = db.hapus_semua(chat_id)
+        if not hasil["dihapus"]:
+            telegram.send_message(chat_id, reply.delete_help_text(db.list_jobs_for_chat(chat_id)))
+            return
+        telegram.send_message(chat_id, reply.delete_done_all_text(hasil))
+        return
+
+    # Nomor boleh ditulis "#12" atau "12" — orang menyalin apa yang mereka lihat.
+    nomor = perintah.lstrip("#")
+    if not nomor.isdigit():
+        telegram.send_message(chat_id, reply.delete_usage_text())
+        return
+
+    job_id = int(nomor)
+    job = db.get_job(job_id)
+    if job is None or job["chat_id"] != chat_id:
+        telegram.send_message(chat_id, reply.delete_not_found_text(job_id))
+        return
+
+    try:
+        info = db.hapus_pekerjaan(job, chat_id)
+    except db.DeleteRefused as exc:
+        telegram.send_message(chat_id, reply.delete_refused_text(str(exc)))
+        return
+
+    telegram.send_message(chat_id, reply.delete_done_text(job_id, info))
 
 
 def _handle_drive_folder(chat_id, folder_id):

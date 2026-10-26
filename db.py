@@ -182,8 +182,9 @@ from storage.chats import (  # noqa: E402
 )
 from storage.jobs import (  # noqa: E402
     active_job_for, bump_job_progress, claim_next_job, count_jobs_by_status,
-    create_job, get_job, list_jobs, set_job_progress, set_job_progress_at,
-    set_job_progress_message, set_job_status, set_job_total, selesai_sebelum,
+    create_job, get_job, list_jobs, list_jobs_for_chat, set_job_progress,
+    set_job_progress_at, set_job_progress_message, set_job_status,
+    set_job_total, selesai_sebelum,
 )
 from storage.files import (  # noqa: E402
     add_file, files_for_job, pending_files, set_file_path, set_file_status,
@@ -192,3 +193,6 @@ from storage.receipts import (  # noqa: E402
     add_receipt, corrections_for_job, receipts_for_job, update_receipt,
 )
 from storage.usage import add_usage, receipts_done_since, usage_since  # noqa: E402
+from storage.deletes import (  # noqa: E402
+    DeleteRefused, hapus_pekerjaan, hapus_semua, rincian,
+)

@@ -38,6 +38,30 @@ def webhook_info():
     return _call("getWebhookInfo", {})
 
 
+# Menu perintah yang muncul di tombol "/" aplikasi Telegram. Didaftarkan sekali
+# lewat kode, bukan diklik manual di BotFather, supaya perintah baru
+# (/delete) ikut muncul tanpa langkah tambahan yang mudah terlupa.
+_PERINTAH = [
+    {"command": "help", "description": "Cara pakai, langkah demi langkah"},
+    {"command": "status", "description": "Kiriman yang berjalan dan sisa jatah"},
+    {"command": "batal", "description": "Hentikan kiriman yang sedang berjalan"},
+    {"command": "delete", "description": "Hapus kiriman yang sudah selesai"},
+    {"command": "start", "description": "Mulai dari awal"},
+]
+
+
+def set_commands():
+    """Pasang daftar perintah ke menu Telegram.
+
+    Gagal memasang menu bukan alasan bot berhenti: perintahnya tetap bisa
+    diketik. Karena itu kegagalannya hanya dicatat, tidak dilempar.
+    """
+    try:
+        return _call("setMyCommands", {"commands": _PERINTAH})
+    except TelegramError:
+        return None
+
+
 def send_message(chat_id, text, reply_markup=None, parse_mode="HTML"):
     payload = {"chat_id": chat_id, "text": text, "disable_web_page_preview": True}
     if parse_mode:

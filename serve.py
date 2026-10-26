@@ -53,9 +53,24 @@ def _daftarkan_webhook():
               file=sys.stderr)
 
 
+def _pasang_menu():
+    """Daftarkan daftar perintah ke menu Telegram saat start.
+
+    Dulu orang harus mengisi menu ini manual di BotFather, dan perintah baru
+    seperti /delete akan tetap tersembunyi kalau langkah itu terlupa.
+    """
+    try:
+        from bot import telegram
+        if telegram.set_commands():
+            print("[menu] daftar perintah terpasang", flush=True)
+    except Exception as exc:
+        print(f"[menu] gagal memasang daftar perintah ({exc})", file=sys.stderr)
+
+
 def main():
     _secret_webhook()
     _daftarkan_webhook()
+    _pasang_menu()
 
     port = int(os.environ.get("PORT", "2785"))
     app = create_app()

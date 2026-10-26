@@ -8,6 +8,32 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
+
+
+def _baca_env(path):
+    """Baca .env sederhana ke environment, tanpa library tambahan.
+
+    Tanpa ini, `python serve.py` hanya jalan kalau pemanggilnya lebih dulu
+    menjalankan `set -a; . .env`. Begitu dijalankan dari cron atau dari proses
+    latar, tokennya kosong dan bot diam tanpa sebab yang jelas — pernah terjadi
+    dan membingungkan. Nilai yang sudah ada di environment tidak ditimpa,
+    supaya cara lama (export manual) tetap berjalan.
+    """
+    if not path.exists():
+        return
+    for baris in path.read_text().splitlines():
+        baris = baris.strip()
+        if not baris or baris.startswith("#") or "=" not in baris:
+            continue
+        nama, nilai = baris.split("=", 1)
+        nama = nama.strip()
+        nilai = nilai.strip().strip('"').strip("'")
+        if nama and nama not in os.environ:
+            os.environ[nama] = nilai
+
+
+_baca_env(BASE_DIR / ".env")
+
 DATA_DIR = Path(os.environ.get("NOTA_DATA_DIR", BASE_DIR / "data"))
 DB_PATH = DATA_DIR / "nota.sqlite3"
 UPLOAD_DIR = DATA_DIR / "uploads"

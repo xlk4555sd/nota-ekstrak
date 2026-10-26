@@ -76,6 +76,36 @@ Beri izin ke chat sendiri lewat `scripts/admin_cli.py allow <chat_id>`.
 Tanpa izin, bot menolak setiap pesan. Ini disengaja: mengizinkan orang harus
 tindakan sadar, bukan bawaan.
 
+## Perintah
+
+| perintah | kegunaan |
+|---|---|
+| `/help` | cara pakai langkah demi langkah, bukan sekadar daftar |
+| `/status` | kiriman yang berjalan dan sisa jatah hari ini |
+| `/batal` | hentikan kiriman yang sedang berjalan |
+| `/delete` | daftar kiriman yang bisa dihapus |
+| `/delete 12` | hapus kiriman nomor 12 beserta berkas dan hasilnya |
+| `/delete semua` | hapus seluruh riwayat, lalu minta konfirmasi |
+
+`/delete` tanpa argumen menampilkan nomor kiriman yang sudah selesai. Nomor itu
+yang dipakai untuk menghapus — bukan nama berkas, karena nama berkas tidak unik
+dan mudah salah ketik.
+
+Tiga hal yang dijaga di sana, masing-masing punya tes:
+
+**Satu chat tidak bisa menghapus milik chat lain**, sekalipun nomornya benar.
+Penyaringan `chat_id` ada di dalam SQL, bukan setelah data dibaca.
+
+**Kiriman yang masih berjalan tidak bisa dihapus** di tengah jalan. Kalau boleh,
+worker akan menulis ke baris yang sudah tidak ada. User diminta `/batal` dulu.
+
+**Hapus semua butuh dua langkah:** `/delete semua` hanya menanyakan, dan baru
+`/delete ya` benar-benar menghapus. Satu salah ketik tidak boleh menghabiskan
+riwayat.
+
+Yang dihapus bukan cuma baris tabel: berkas asli di `data/uploads/`, hasil tabel
+di basis data, catatan pemakaian model, dan berkas CSV/Excel yang sudah dibuat.
+
 ## Alamat publik (bagian yang paling mudah bikin bingung)
 
 Telegram mengirim pesan lewat **webhook**: Telegram yang menghubungi server
@@ -126,12 +156,12 @@ diulang setiap kali alamat berubah.
 ```
 serve.py        titik masuk: webhook + worker + pembersih
 db.py           koneksi, skema, migrasi
-storage/        satu modul per domain: jobs, files, receipts, chats, usage
+storage/        satu modul per domain: jobs, files, receipts, chats, usage, deletes
 bot/            terima pesan (handler), teks balasan (reply), HTTP Telegram
 services/       unduh berkas, rasterisasi PDF, panggil model, ekspor
 routes/         pintu masuk webhook, titik kesehatan
 eval/           pengukuran akurasi dengan model sungguhan
-tests/          148 tes
+tests/          165 tes
 ```
 
 Ada satu aturan yang dipegang seluruh kode: **hanya `storage/` yang menulis SQL.**
@@ -183,7 +213,7 @@ umurnya sudah lewat.
 python -m unittest discover -s tests -t .
 ```
 
-148 tes, semuanya berjalan tanpa memanggil API berbayar. Model selalu dipalsukan
+165 tes, semuanya berjalan tanpa memanggil API berbayar. Model selalu dipalsukan
 di tes; akurasi sesungguhnya hanya diukur lewat `eval/run_live.sh`.
 
 ## Lisensi

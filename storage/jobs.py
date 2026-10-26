@@ -100,6 +100,21 @@ def list_jobs(limit=20):
     return [dict(r) for r in rows]
 
 
+def list_jobs_for_chat(chat_id, limit=50):
+    """Pekerjaan milik satu chat, terbaru dulu.
+
+    Dipakai `/delete` supaya user melihat riwayatnya sendiri — dan hanya
+    miliknya. Batas `chat_id` ada di SQL, bukan disaring setelah dibaca, agar
+    tidak ada jalan tidak sengaja menyentuh pekerjaan chat lain.
+    """
+    from db import connect
+    rows = connect().execute(
+        "SELECT * FROM jobs WHERE chat_id = ? ORDER BY id DESC LIMIT ?",
+        (chat_id, limit),
+    ).fetchall()
+    return [dict(r) for r in rows]
+
+
 def bump_job_progress(job_id):
     from db import connect
     conn = connect()
